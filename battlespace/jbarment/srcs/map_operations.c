@@ -4,6 +4,19 @@
 #include <stdio.h>
 
 
+void		add_ship(t_master *bitmaps, t_map *ship_map, t_ship *ship, int pos)
+{
+	t_map	contact;
+	t_map	ship_in_pos;
+
+	ship_in_pos = right_shift_loc(ship->map, pos);
+	contact = contact_pos(ship, pos);
+//	bitmaps->contact = map_or(&contact, &(bitmaps->contact));
+	*ship_map = map_or(&ship_in_pos, ship_map);
+	contact = map_or(&contact, ship_map);
+	bitmaps->obstacles = map_or(&contact, &(bitmaps->obstacles));
+}
+
 t_map		contact_pos(const t_ship *ship, int pos)
 {
 	static t_map	left_col = {LCOLONE , LCOLTWO};
@@ -146,10 +159,11 @@ inline void	right_shift(t_map *map, int shift)
 {
 	if (shift == 0)
 		return ;
-	if (shift == 64)
+	if (shift >= 64)
 	{
-		map->two = map->one;
+		map->two = map->one >> (shift - 64);
 		map->one = 0;
+		return ;
 	}
 	map->two = (map->two >> shift) | (map->one << (64 - shift));
 	map->one = map->one >> shift;
@@ -161,17 +175,19 @@ inline void	left_shift(t_map *map, int shift)
 		return ;
 	if (shift == 64)
 	{
-		map->one = map->two;
+		map->one = map->two << (shift - 64);
 		map->two = 0;
+		return ;
 	}
 	map->one = (map->one << shift) | (map->two >> (64 - shift));
 	map->two = map->two << shift;
 }
 
-inline void	right_shift_loc(t_map map, int shift)
+inline t_map	right_shift_loc(t_map map, int shift)
 {
 	map.two = (map.two >> shift) | (map.one << (64 - shift));
 	map.one = map.one >> shift;
+	return (map);
 }
 
 inline void	add_pos(t_map *map, int pos)

@@ -54,30 +54,83 @@ int		is_pos_valid(t_ship *ship, int pos, t_master *bitmaps)
 		return (1);
 	return (0);
 }
-/*
-int		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no)
+
+void	apply_ship_map_to_heatmap(t_map ship_map,t_master *bitmaps)
 {
-	int		pos;
-	t_map	tmp;
-	t_ship	*ship;
-	t_ship	*ship_90;
+	unsigned long	mask;
+	int				i;
 
-	while (ship_no < 5 && (fleet->live_ships[ship_no] == 0))
-		ship_no++;
-	if (ship_no == 5)
-		return (1);
-	ship = &fleet->ships[ship_no];
-	ship_90 = &fleet->ships_90[ship_no];
-	while (pos < 100)
+	bitmaps->total += 1; //for info
+	mask = MAXO;
+	i = 0;
+	while (i < 64)
 	{
-		if (is_pos_valid(ship, pos, bitmaps)
+		if ((ship_map.one & mask) != 0)
 		{
-			tmp = bitmaps->obstacles;
-
+			bitmaps->heatmap[i] += 1;
 		}
+		mask = mask >> 1;
+		i++;
+	}
+	mask = MAXO;
+	while (i < 100)
+	{
+		if ((ship_map.one & mask) != 0)
+		{
+			bitmaps->heatmap[i] += 1;
+		}
+		mask = mask >> 1;
+		i++;
 	}
 }
-*/
+
+
+void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map ship_map)
+{
+	int		pos;
+	t_map	tmp_obstacles;
+	t_map	tmp_ship_map;
+	t_ship	*ship;
+
+	while ((ship_no < 4) && (fleet->live_ships[ship_no] == 0))
+		ship_no++;
+	if (ship_no == 0)
+		printf("ZERO\n");
+	if (ship_no == 1)
+		printf("ONE\n");
+	if (ship_no == 4)
+	{
+		apply_ship_map_to_heatmap(ship_map, bitmaps);
+		return;
+	}
+	pos = 0;
+	while (pos < 100)
+	{
+		ship = &fleet->ships[ship_no];
+		if (is_pos_valid(ship, pos, bitmaps))
+		{
+			tmp_obstacles = bitmaps->obstacles;
+			tmp_ship_map = ship_map;
+			add_ship(bitmaps, &ship_map, ship, pos);
+			make_heatmap_bit(bitmaps, fleet, ship_no + 1, ship_map); //bitmaps->contact forgotten for now
+			ship_map = tmp_ship_map;
+			bitmaps->obstacles = tmp_obstacles;
+		}
+		ship = &fleet->ships_90[ship_no];
+		if (is_pos_valid(ship, pos, bitmaps))
+		{
+			tmp_obstacles = bitmaps->obstacles;
+			tmp_ship_map = ship_map;
+			add_ship(bitmaps, &ship_map, ship, pos);
+			make_heatmap_bit(bitmaps, fleet, ship_no + 1, ship_map);
+			ship_map = tmp_ship_map;
+			bitmaps->obstacles = tmp_obstacles;
+		}
+		pos++;
+	}
+	return;
+}
+
 
 /*
 // WILL CHANGE OBSTACLES MAP MAKE A TMP !! ASSUMES POS TO BE VALID

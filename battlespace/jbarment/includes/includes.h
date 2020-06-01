@@ -71,6 +71,7 @@ void		print_heatmap(t_master *bitmaps);
 void		printoo(t_master *bitmaps);
 void		print_ship(t_ship *ship);
 void		print_fleet(t_fleet *fleet);
+t_map		right_shift_loc(t_map map, int shift);
 void		right_shift(t_map *map, int shift);
 void		left_shift(t_map *map, int shift);
 void		both_shift(t_map *map, int shift);
@@ -84,6 +85,8 @@ t_map		map_not(t_map *one);
 
 void		make_contact_from_map(t_map *map, t_map *contact);
 t_map		contact_pos(const t_ship *ship, int pos);
+void		add_ship(t_master *bitmaps, t_map *ship_map, t_ship *ship, int pos);
+void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map ship_map);
 
 
 
