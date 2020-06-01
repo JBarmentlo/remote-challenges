@@ -16,11 +16,15 @@ int	main()
 
 	bitmaps = make_bitmaps();
 	nation_fleet = make_nation_fleet();
+
 //	print_fleet(nation_fleet);
-	make_heatmap(nation_fleet, bitmaps, 0);
+	t_map tmp;
+	tmp = contact_pos(&(nation_fleet->ships[0]), 0);
+	print_map(&tmp);
+//	make_heatmap(nation_fleet, bitmaps, 0);
 //	printoo(bitmaps);
-	normalize_heatmap(bitmaps);
-	print_heatmap(bitmaps);
+//	normalize_heatmap(bitmaps);
+//	print_heatmap(bitmaps);
 	return (1);
 }
 

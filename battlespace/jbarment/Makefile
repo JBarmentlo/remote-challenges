@@ -6,10 +6,10 @@ OBJ_FOLDER=out
 
 CFLAGS= -I $(HEADER_FOLDER)
 
-SOURCES=main.c\
+SOURCES=map_operations.c\
+		main.c\
 		generator_nation.c\
 		ship_operations.c\
-		map_operations.c\
 
 SRCS=$(addprefix $(SOURCE_FOLDER)/, $(SOURCES))
 OUT= $(addprefix $(OBJ_FOLDER)/,$(notdir $(SOURCES:.c=.o)))

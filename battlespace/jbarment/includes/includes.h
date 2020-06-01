@@ -1,8 +1,19 @@
+#ifndef INCLUDES_H
+# define INCLUDES_H
+# define ONE 	0b1
+# define MAXO		0b1000000000000000000000000000000000000000000000000000000000000000
+# define LCOLONE	0b1000000000100000000010000000001000000000100000000010000000001000
+# define LCOLTWO	0b0000001000000000100000000010000000000000000000000000000000000000
+# define RCOLONE	0b0000000001000000000100000000010000000001000000000100000000010000
+# define RCOLTWO	0b0000010000000001000000000100000000010000000000000000000000000000 
+# define ROW	0b1111111100000000000000000000000000000000000000000000000000000000
+
 typedef unsigned char	t_byte;
 
 typedef struct	s_map
 {
-	t_byte		map[100];
+	unsigned long one;
+	unsigned long two;
 }				t_map;
 
 typedef struct	s_heatmap
@@ -17,6 +28,8 @@ typedef struct	s_ship
 	int			size;
 	int			pos[5];
 	int			top_left_corner_pos;
+	t_map		map;
+	t_map		contact;
 	/*
 	int			contact_pos[12];
 	int			contact_pos_left[12];
@@ -37,12 +50,12 @@ typedef struct	s_fleet
 
 typedef struct	s_master
 {
-	t_byte		hit[100];
-	t_byte		miss[100];
-	t_byte		sunk[100];
-	t_byte		blocked[100];
-	t_byte		contact[100];
-	t_byte		obstacles[100];
+	t_map		hit;
+	t_map		miss;
+	t_map		sunk;
+	t_map		blocked;
+	t_map		contact;
+	t_map		obstacles;
 	double		heatmap[100];
 	int			total;
 }				t_master;
@@ -58,3 +71,20 @@ void		print_heatmap(t_master *bitmaps);
 void		printoo(t_master *bitmaps);
 void		print_ship(t_ship *ship);
 void		print_fleet(t_fleet *fleet);
+void		right_shift(t_map *map, int shift);
+void		left_shift(t_map *map, int shift);
+void		both_shift(t_map *map, int shift);
+void		add_pos(t_map *map, int pos);
+void		print_map(t_map *map);
+int			is_bitwise_and_zero(t_map *one, t_map *two);
+t_map		map_or(t_map *one, t_map *two);
+t_map		map_and(t_map *one, t_map *two);
+t_map		map_xor(t_map *one, t_map *two);
+t_map		map_not(t_map *one);
+
+void		make_contact_from_map(t_map *map, t_map *contact);
+t_map		contact_pos(const t_ship *ship, int pos);
+
+
+
+#endif

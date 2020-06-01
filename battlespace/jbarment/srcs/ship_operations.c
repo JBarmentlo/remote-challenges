@@ -15,23 +15,11 @@ void	print_ship(t_ship *ship)
 		printf("%d  ", ship->pos[i]);
 		i++;
 	}
-	i = 0;
 	printf("\n");
-	while (i < 100)
-	{
-		if (i % 10 == 0)
-			printf("\n");
-		if (piece < ship->size && i == ship->pos[piece])
-		{
-			printf(" X ");
-			piece++;
-		}
-		else
-		{
-			printf(" - ");
-		}
-		i++;
-	}
+	print_map(&(ship->map));
+	printf("\n contact: \n");
+	print_map(&(ship->contact));
+
 	printf("\n");
 }
 
@@ -48,11 +36,11 @@ void	print_fleet(t_fleet *fleet)
 	}
 }
 
-int		is_pos_valid(t_ship *ship, int pos, t_byte *obstables)
+int		is_pos_valid(t_ship *ship, int pos, t_master *bitmaps)
 {
-	int	posi;
-	int	posj;
-	int	i;
+	int		posi;
+	int		posj;
+	t_map	ship_map;
 
 	posi = pos / 10;
 	if ((posi + ship->height) > 10) // check these bitches
@@ -60,16 +48,38 @@ int		is_pos_valid(t_ship *ship, int pos, t_byte *obstables)
 	posj = pos % 10;
 	if ((posj + ship->width) > 10)
 		return (0);
-	i = 0;
-	while (i < ship->size)
-	{
-		if (obstables[pos + ship->pos[i]] == 1)
-			return (0);
-		i++;
-	}
-	return (1);
+	ship_map = ship->map;
+	right_shift(&ship_map, pos);
+	if (is_bitwise_and_zero(&(bitmaps->obstacles), &ship_map))
+		return (1);
+	return (0);
 }
+/*
+int		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no)
+{
+	int		pos;
+	t_map	tmp;
+	t_ship	*ship;
+	t_ship	*ship_90;
 
+	while (ship_no < 5 && (fleet->live_ships[ship_no] == 0))
+		ship_no++;
+	if (ship_no == 5)
+		return (1);
+	ship = &fleet->ships[ship_no];
+	ship_90 = &fleet->ships_90[ship_no];
+	while (pos < 100)
+	{
+		if (is_pos_valid(ship, pos, bitmaps)
+		{
+			tmp = bitmaps->obstacles;
+
+		}
+	}
+}
+*/
+
+/*
 // WILL CHANGE OBSTACLES MAP MAKE A TMP !! ASSUMES POS TO BE VALID
 // Updates heatmap, for now no contact
 void	drop_ship(t_ship *ship, int pos, t_master *bitmaps)
@@ -149,3 +159,4 @@ int		make_heatmap(t_fleet *fleet, t_master *bitmaps, int ship_no)
 		printf("total %d\n", bitmaps->total);
 	return (0);
 }
+*/
