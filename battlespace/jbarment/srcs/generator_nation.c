@@ -93,5 +93,6 @@ t_fleet	*make_nation_fleet(t_master *bitmaps)
 	make_nation_ship(2, &(out->ships[4]));
 	make_nation_ship_90(2, &(out->ships_90[4]));
 	bitmaps->nation_fleet = out;
+	out->odds = 1.0;
 	return (out);
 }

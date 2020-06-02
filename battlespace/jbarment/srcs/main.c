@@ -15,12 +15,18 @@ int	main()
 	int			last_shot;
 	int			result;
 	t_id		sunk_id;
+	t_fleet	*alien_f;
+	t_fleet	*merc_f;
 
 	bitmaps = make_bitmaps();
+	alien_f = make_alien_fleet(bitmaps);
+	merc_f = make_merc_fleet(bitmaps);
 	make_shield_fleet(bitmaps);
 	make_nation_fleet(bitmaps);
 	result = 0;
-
+	make_general_heatmap(bitmaps);
+	print_heatmap(bitmaps);
+/*
 	while (1)
 	{
 		dprintf(2, "ships left %d\n result %d\n", bitmaps->nation_fleet->nb_live_ships, result);
@@ -53,6 +59,7 @@ int	main()
 			result = shoot(last_shot, bitmaps);
 		}
 	}
+*/
 
 /*
 	add_pos(&bitmaps->current_sunk, 55);

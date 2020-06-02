@@ -153,10 +153,6 @@ void		make_cheap_heatmap(t_master *bitmaps, t_fleet *fleet)
 	make_obstacles(bitmaps);
 	zero_tmp_heatmap(bitmaps);
 	zero_heatmap(bitmaps);
-//	printf("obstacles: \n");
-//	print_map(&bitmaps->obstacles);
-//	printf("miss: \n");
-//	print_map(&bitmaps->miss);
 	bitmaps->total = 0;
 	i = 0;
 	while (i < 5)

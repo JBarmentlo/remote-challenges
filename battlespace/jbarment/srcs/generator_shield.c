@@ -102,5 +102,6 @@ t_fleet	*make_shield_fleet(t_master *bitmaps)
 	init_live_shield(out);
 	make_ship(&out->ships[0]);
 	bitmaps->shield_fleet = out;
+	out->odds = 1.0;
 	return (out);
 }

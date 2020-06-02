@@ -15,21 +15,11 @@ void		handle_sunk_ship(t_master *bitmaps, t_id sunk_id)
 
 void		print_ship(t_ship *ship)
 {
-	int	i;
-	int	piece;
-
-	piece = 0;
-	i = 0;
 	printf("width: %d\n height: %d\n size: %d\n", ship->width, ship->height, ship->size);
-	while (i < ship->size)
-	{
-		printf("%d  ", ship->pos[i]);
-		i++;
-	}
 	printf("\n");
 	print_map(&(ship->map));
-	printf("\n contact: \n");
-	print_map(&(ship->contact));
+//	printf("\n contact: \n");
+//	print_map(&(ship->contact));
 
 	printf("\n");
 }
