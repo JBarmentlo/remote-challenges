@@ -9,18 +9,27 @@ void		add_ship(t_master *bitmaps, t_map *ship_map, t_ship *ship, int pos)
 	t_map	contact;
 	t_map	ship_in_pos;
 
-	ship_in_pos = right_shift_loc(ship->map, pos);
+	ship_in_pos = ship->map;
+	right_shift(&ship_in_pos, pos);
+//	printf("POS: %d\n", pos);
+//	printf("ship to add:\n");
+//	print_map(&ship_in_pos);
 	contact = contact_pos(ship, pos);
+//	printf("contact:\n");
+//	print_map(&contact);
 //	bitmaps->contact = map_or(&contact, &(bitmaps->contact));
 	*ship_map = map_or(&ship_in_pos, ship_map);
 	contact = map_or(&contact, ship_map);
 	bitmaps->obstacles = map_or(&contact, &(bitmaps->obstacles));
+	//printf("obstacles:\n");
+	//print_map(&bitmaps->obstacles);
 }
 
 t_map		contact_pos(const t_ship *ship, int pos)
 {
 	static t_map	left_col = {LCOLONE , LCOLTWO};
 	static t_map	right_col = {RCOLONE , RCOLTWO};
+	t_map			tmp;
 	t_map	out;
 
 	out = ship->contact;
@@ -30,10 +39,12 @@ t_map		contact_pos(const t_ship *ship, int pos)
 		out = map_or(&out, &left_col);
 		out = map_not(&out);
 	}
-	if ((pos + ship->width ) % 10 == 9)
+	if ((pos + ship->width - 1) % 10 == 9)
 	{
+		tmp = left_col;
+		right_shift(&tmp, ship->width + 1);
 		out = map_not(&out);
-		out = map_or(&out, &right_col);
+		out = map_or(&out, &tmp);
 		out = map_not(&out);
 	}
 	both_shift(&out, pos - 11);
@@ -185,6 +196,7 @@ inline void	left_shift(t_map *map, int shift)
 
 inline t_map	right_shift_loc(t_map map, int shift)
 {
+	printf("DO NOT USE MISTAKE WERE MADE\n");
 	map.two = (map.two >> shift) | (map.one << (64 - shift));
 	map.one = map.one >> shift;
 	return (map);
@@ -265,7 +277,7 @@ void	print_heatmap(t_master *bitmaps)
 	while (i < 100)
 	{
 		if (i % 10 == 0)
-			printf("\n");
+			printf("\n\n");
 		printf("%.2f ", bitmaps->heatmap[i]);
 		i++;
 	}

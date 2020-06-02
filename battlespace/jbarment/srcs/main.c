@@ -20,7 +20,8 @@ int	main()
 //	print_fleet(nation_fleet);
 	t_map shipmap;
 	bzero(&shipmap, sizeof(t_map));
-	make_heatmap_bit(bitmaps, nation_fleet, 0, shipmap);
+	make_heatmap_bit(bitmaps, nation_fleet, 4, shipmap);
+	printf("TOTAL: %d\n", bitmaps->total);
 	printoo(bitmaps);
 	normalize_heatmap(bitmaps);
 	print_heatmap(bitmaps);

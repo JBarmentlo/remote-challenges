@@ -75,7 +75,7 @@ void	apply_ship_map_to_heatmap(t_map ship_map,t_master *bitmaps)
 	mask = MAXO;
 	while (i < 100)
 	{
-		if ((ship_map.one & mask) != 0)
+		if ((ship_map.two & mask) != 0)
 		{
 			bitmaps->heatmap[i] += 1;
 		}
@@ -92,15 +92,21 @@ void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map shi
 	t_map	tmp_ship_map;
 	t_ship	*ship;
 
-	while ((ship_no < 4) && (fleet->live_ships[ship_no] == 0))
+	while ((ship_no < 5) && (fleet->live_ships[ship_no] == 0))
 		ship_no++;
 	if (ship_no == 0)
 		printf("ZERO\n");
 	if (ship_no == 1)
 		printf("ONE\n");
-	if (ship_no == 4)
+	if (ship_no == 5)
 	{
 		apply_ship_map_to_heatmap(ship_map, bitmaps);
+		bitmaps->total += 1;
+		//printf("END\n");
+		printf("shipmap\n");
+		print_map(&ship_map);
+		//printf("obstacles\n");
+		//print_map(&bitmaps->obstacles);
 		return;
 	}
 	pos = 0;
@@ -111,7 +117,10 @@ void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map shi
 		{
 			tmp_obstacles = bitmaps->obstacles;
 			tmp_ship_map = ship_map;
+			//printf("ship: %d\n pos: %d \n",ship_no, pos);
 			add_ship(bitmaps, &ship_map, ship, pos);
+			//printf("shipmap\n");
+			//print_map(&ship_map);
 			make_heatmap_bit(bitmaps, fleet, ship_no + 1, ship_map); //bitmaps->contact forgotten for now
 			ship_map = tmp_ship_map;
 			bitmaps->obstacles = tmp_obstacles;
@@ -121,7 +130,10 @@ void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map shi
 		{
 			tmp_obstacles = bitmaps->obstacles;
 			tmp_ship_map = ship_map;
+			//printf("ship: %d\n pos: %d \n",ship_no, pos);
 			add_ship(bitmaps, &ship_map, ship, pos);
+			//printf("shipmap\n");
+			//print_map(&ship_map);
 			make_heatmap_bit(bitmaps, fleet, ship_no + 1, ship_map);
 			ship_map = tmp_ship_map;
 			bitmaps->obstacles = tmp_obstacles;
