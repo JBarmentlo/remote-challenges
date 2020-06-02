@@ -12,24 +12,67 @@
 int	main()
 {
 	t_master	*bitmaps;
-	t_fleet		*nation_fleet;
+	int			last_shot;
+	int			result;
+	t_id		sunk_id;
 
 	bitmaps = make_bitmaps();
-	nation_fleet = make_shield_fleet();
-
-//	print_fleet(nation_fleet);
-	t_map shipmap;
-	bzero(&shipmap, 16);
-	print_map(&nation_fleet->ships[0].contact);
-	int i = 0;
-	while (i < 100)
+	make_shield_fleet(bitmaps);
+	make_nation_fleet(bitmaps);
+	result = 0;
+	/*
+	while (1)
 	{
-		printf("%d\n\n",i);
-		shipmap = shield_contact_from_pos(&nation_fleet->ships[0], i);
-		printf("contact\n");
-		print_map(&shipmap);
-		i++;
+//		write_map(&bitmaps->shot);
+		if (result == SUNK)
+		{
+			dprintf(2, "Sunk\n");
+			write_map(&bitmaps->sunk);
+			dprintf(2, "curent_Sunk\n");
+			write_map(&bitmaps->current_sunk);
+			identify_sunk_ship_fleet(&bitmaps->current_sunk, bitmaps->nation_fleet, bitmaps).ship;
+		}
+		if (result == MISS)
+		{
+			make_cheap_heatmap(bitmaps, bitmaps->nation_fleet);
+			last_shot = heatmap_pick_highest(bitmaps);
+			shoot(last_shot, bitmaps);
+			result = handle_input(bitmaps, last_shot);
+		}
+		if (result == HIT || result == BLOCKED)
+		{
+			if (result == BLOCKED)
+				write_map(&bitmaps->shield_pos);
+			result = hunt_mode(bitmaps);
+		}
+		else
+		{
+			make_cheap_heatmap(bitmaps, bitmaps->nation_fleet);
+			last_shot = heatmap_pick_highest(bitmaps);
+			shoot(last_shot, bitmaps);
+			result = handle_input(bitmaps, last_shot);
+		}
 	}
+	*/
+/*
+	add_pos(&bitmaps->current_sunk, 55);
+	add_pos(&bitmaps->current_sunk, 56);
+	add_pos(&bitmaps->current_sunk, 57);
+	add_pos(&bitmaps->current_sunk, 58);
+	add_pos(&bitmaps->current_sunk, 59);
+
+	print_ship(identify_sunk_ship_fleet(bitmaps->nation_fleet, bitmaps).ship);
+	*/
+//	make_surround_map(bitmaps, bitmaps->nation_fleet);
+//	print_heatmap(bitmaps);
+
+
+
+
+
+//	make_shield_heatmap(bitmaps, &shield_fleet->ships[0]);
+
+
 //	make_heatmap_bit(bitmaps, nation_fleet, 2, shipmap);
 //	printf("TOTAL: %d\n", bitmaps->total);
 	//printoo(bitmaps);

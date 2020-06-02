@@ -6,7 +6,8 @@
 t_map	new_map(void)
 {
 	t_map	map;
-	bzero(&map, sizeof(map));
+	map.one = 0;
+	map.two = 0;
 	return (map);
 }
 
@@ -73,7 +74,7 @@ void	init_live_ships(t_fleet *fleet)
 	fleet->nb_last_live_ship = 4;
 }
 
-t_fleet	*make_nation_fleet(void)
+t_fleet	*make_nation_fleet(t_master *bitmaps)
 {
 	t_fleet	*out;
 	int		i;
@@ -91,5 +92,6 @@ t_fleet	*make_nation_fleet(void)
 	make_nation_ship_90(3, &(out->ships_90[3]));
 	make_nation_ship(2, &(out->ships[4]));
 	make_nation_ship_90(2, &(out->ships_90[4]));
+	bitmaps->nation_fleet = out;
 	return (out);
 }

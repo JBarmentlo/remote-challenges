@@ -69,7 +69,7 @@ void	make_ship(t_ship *out)
 	out->size = 1;
 	out->map.one = 0;
 	out->map.two = 0;
-	out->pos[0] = 1;
+	out->pos[0] = 0;
 
 
 	make_map_from_pos(out);
@@ -92,7 +92,7 @@ static void	init_live_shield(t_fleet *fleet)
 	fleet->nb_last_live_ship = 0;
 }
 
-t_fleet	*make_shield_fleet(void)
+t_fleet	*make_shield_fleet(t_master *bitmaps)
 {
 	t_fleet	*out;
 	int		i;
@@ -101,5 +101,6 @@ t_fleet	*make_shield_fleet(void)
 	bzero(out, sizeof(t_fleet));
 	init_live_shield(out);
 	make_ship(&out->ships[0]);
+	bitmaps->shield_fleet = out;
 	return (out);
 }

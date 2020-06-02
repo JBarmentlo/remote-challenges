@@ -12,6 +12,10 @@ SOURCES=map_operations.c\
 		ship_operations.c\
 		read_input.c\
 		generator_shield.c\
+		find_shield.c\
+		VM.c\
+		heatmaps.c\
+		hunt_mode.c\
 
 SRCS=$(addprefix $(SOURCE_FOLDER)/, $(SOURCES))
 OUT= $(addprefix $(OBJ_FOLDER)/,$(notdir $(SOURCES:.c=.o)))

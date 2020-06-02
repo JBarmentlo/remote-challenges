@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void	print_ship(t_ship *ship)
+void		print_ship(t_ship *ship)
 {
 	int	i;
 	int	piece;
@@ -23,20 +23,23 @@ void	print_ship(t_ship *ship)
 	printf("\n");
 }
 
-void	print_fleet(t_fleet *fleet)
+void		print_fleet(t_fleet *fleet)
 {
 	int	i;
 
 	i = 0;
 	while (i < 5)
 	{
-		print_ship(&(fleet->ships[i]));
-		print_ship(&(fleet->ships_90[i]));
+		if (fleet->live_ships[i])
+		{
+			print_ship(&(fleet->ships[i]));
+			print_ship(&(fleet->ships_90[i]));
+		}
 		i++;
 	}
 }
 
-int		is_pos_valid(t_ship *ship, int pos, t_master *bitmaps)
+int			is_pos_valid(t_ship *ship, int pos, t_master *bitmaps)
 {
 	int		posi;
 	int		posj;
@@ -55,19 +58,20 @@ int		is_pos_valid(t_ship *ship, int pos, t_master *bitmaps)
 	return (0);
 }
 
-void	apply_ship_map_to_heatmap(t_map ship_map,t_master *bitmaps)
+// APLIES TO TMP
+void		apply_ship_map_to_heatmap(t_map ship_map,t_master *bitmaps)
 {
 	unsigned long	mask;
 	int				i;
 
-	bitmaps->total += 1; //for info
+	bitmaps->total += 1;
 	mask = MAXO;
 	i = 0;
 	while (i < 64)
 	{
 		if ((ship_map.one & mask) != 0)
 		{
-			bitmaps->heatmap[i] += 1;
+			bitmaps->heatmap_tmp[i] += 1;
 		}
 		mask = mask >> 1;
 		i++;
@@ -77,7 +81,7 @@ void	apply_ship_map_to_heatmap(t_map ship_map,t_master *bitmaps)
 	{
 		if ((ship_map.two & mask) != 0)
 		{
-			bitmaps->heatmap[i] += 1;
+			bitmaps->heatmap_tmp[i] += 1;
 		}
 		mask = mask >> 1;
 		i++;
@@ -140,37 +144,6 @@ void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map shi
 		pos++;
 	}
 	return;
-}
-
-void		make_cheap_heatmap_ship(t_master *bitmaps, t_ship *ship)
-{
-	int		pos;
-
-	pos = 0;
-	while (pos < 100)
-	{
-		if (is_pos_valid(ship, pos, bitmaps))
-		{
-			apply_ship_map_to_heatmap(right_shift_loc(ship->map, pos), bitmaps);
-		}
-		pos++;
-	}
-}
-
-void		make_cheap_heatmap(t_master *bitmaps, t_fleet *fleet)
-{
-	int	i;
-
-	i = 0;
-	while (i < 5)
-	{
-		if (fleet->live_ships[i])
-		{
-			make_cheap_heatmap_ship(bitmaps, &fleet->ships[i]);
-			make_cheap_heatmap_ship(bitmaps, &fleet->ships_90[i]);
-		}
-		i++;
-	}
 }
 
 /*

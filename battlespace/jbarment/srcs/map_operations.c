@@ -2,14 +2,61 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <stdio.h>
+#include <unistd.h>
 
+t_map				substract_map(t_map dest, t_map sub)
+{
+		dest = map_not(&dest);
+		dest = map_or(&dest, &sub);
+		dest = map_not(&dest);
+}
 
-int			is_pos_one_coord(t_map *map, int i, int j)
+int				equals(t_map one, t_map two)
+{
+	if (one.one != two.one)
+		return (0);
+	if (one.two != two.two)
+		return (0);
+	return (1);
+}
+
+int				count(t_map	*map)
+{
+	unsigned long	mask;
+	int				i;
+	int				count;
+
+	mask = MAXO;
+	count = 0;
+	i = 0;
+	while (i < 64)
+	{
+		if ((map->one & mask) != 0)
+		{
+			count += 1;
+		}
+		mask = mask >> 1;
+		i++;
+	}
+	mask = MAXO;
+	while (i < 100)
+	{
+		if ((map->two & mask) != 0)
+		{
+			count += 1;
+		}
+		mask = mask >> 1;
+		i++;
+	}
+	return (count);
+}
+
+int				is_pos_one_coord(t_map *map, int i, int j)
 {
 	return (is_pos_one(map, 10 * i + j));
 }
 
-int			is_pos_one(t_map *map, int pos)
+int				is_pos_one(t_map *map, int pos)
 {
 	static t_map	mask;
 	t_map			tmp;
@@ -22,7 +69,7 @@ int			is_pos_one(t_map *map, int pos)
 	return (1);
 }
 
-void		add_ship(t_master *bitmaps, t_map *ship_map, t_ship *ship, int pos)
+void			add_ship(t_master *bitmaps, t_map *ship_map, t_ship *ship, int pos)
 {
 	t_map	contact;
 	t_map	ship_in_pos;
@@ -43,7 +90,7 @@ void		add_ship(t_master *bitmaps, t_map *ship_map, t_ship *ship, int pos)
 	//print_map(&bitmaps->obstacles);
 }
 
-t_map		contact_pos(const t_ship *ship, int pos)
+t_map			contact_pos(const t_ship *ship, int pos)
 {
 	static t_map	left_col = {LCOLONE , LCOLTWO};
 	static t_map	right_col = {RCOLONE , RCOLTWO};
@@ -69,7 +116,7 @@ t_map		contact_pos(const t_ship *ship, int pos)
 	return (out);
 }
 
-void		make_contact_from_map(t_map *map, t_map *contact)
+void			make_contact_from_map(t_map *map, t_map *contact)
 {
 	t_map	tmp;
 
@@ -95,7 +142,7 @@ void		make_contact_from_map(t_map *map, t_map *contact)
 	*contact = map_xor(contact, &tmp);
 }
 
-t_map		map_not(t_map *one)
+t_map			map_not(t_map *one)
 {
 	t_map out;
 
@@ -104,7 +151,7 @@ t_map		map_not(t_map *one)
 	return (out);
 }
 
-t_map		map_and(t_map *one, t_map *two)
+t_map			map_and(t_map *one, t_map *two)
 {
 	t_map out;
 
@@ -113,7 +160,7 @@ t_map		map_and(t_map *one, t_map *two)
 	return (out);
 }
 
-t_map		map_or(t_map *one, t_map *two)
+t_map			map_or(t_map *one, t_map *two)
 {
 	t_map out;
 
@@ -122,7 +169,7 @@ t_map		map_or(t_map *one, t_map *two)
 	return (out);
 }
 
-t_map		map_xor(t_map *one, t_map *two)
+t_map			map_xor(t_map *one, t_map *two)
 {
 	t_map out;
 
@@ -131,7 +178,8 @@ t_map		map_xor(t_map *one, t_map *two)
 	return (out);
 }
 
-int			is_bitwise_and_zero(t_map *one, t_map *two)
+//SCARY
+int				is_bitwise_and_zero(t_map *one, t_map *two)
 {
 	if ((one->one & two->one) != 0)
 		return (0);
@@ -140,7 +188,59 @@ int			is_bitwise_and_zero(t_map *one, t_map *two)
 	return (1);
 }
 
-void		print_map(t_map *map)
+int				is_bitwise_and_one(t_map *one, t_map *two)
+{
+	if (((one->one & two->one) == 0) && ((one->two & two->two) == 0))
+		return (0);
+	return (1);
+}
+
+void			write_map(t_map *map)
+{
+	unsigned long	mask;
+	int				i;
+
+	mask = MAXO;
+	i = 0;
+	while (i < 64)
+	{
+		if (i % 10 == 0)
+		{
+			write(2,"\n", 1);
+		}
+		if (map->one & mask)
+		{
+			write(2,"X ", 2);
+		}
+		else
+		{
+			write(2,"- ", 2);
+		}
+		mask = mask >> 1;
+		i++;
+	}
+	mask = MAXO;
+	while (i < 100)
+	{
+		if (i % 10 == 0)
+		{
+			write(2,"\n", 1);
+		}
+		if (map->two & mask)
+		{
+			write(2,"X ", 2);
+		}
+		else
+		{
+			write(2,"- ", 2);
+		}
+		mask = mask >> 1;
+		i++;
+	}
+	write(2, "\n\n", 2);
+}
+
+void			print_map(t_map *map)
 {
 	unsigned long	mask;
 	int				i;
@@ -185,7 +285,7 @@ void		print_map(t_map *map)
 	printf("\n\n");
 }
 
-inline void	both_shift(t_map *map, int shift)
+inline void		both_shift(t_map *map, int shift)
 {
 	if (shift >= 0)
 		right_shift(map, shift);
@@ -193,7 +293,7 @@ inline void	both_shift(t_map *map, int shift)
 		left_shift(map, -shift);
 }
 
-inline void	right_shift(t_map *map, int shift)
+inline void		right_shift(t_map *map, int shift)
 {
 	if (shift == 0)
 		return ;
@@ -207,7 +307,7 @@ inline void	right_shift(t_map *map, int shift)
 	map->one = map->one >> shift;
 }
 
-inline void	left_shift(t_map *map, int shift)
+inline void		left_shift(t_map *map, int shift)
 {
 	if (shift == 0)
 		return ;
@@ -236,7 +336,7 @@ inline t_map	right_shift_loc(t_map map, int shift)
 	return (map);
 }
 
-inline void	add_pos(t_map *map, int pos)
+inline void		add_pos(t_map *map, int pos)
 {
 	if (pos < 64)
 	{
@@ -248,85 +348,12 @@ inline void	add_pos(t_map *map, int pos)
 	}
 }
 
-t_byte	*copy_map(t_byte *map)
-{
-	t_byte	*copy;
-	int		i;
-
-	copy = malloc(100);
-	i = 0;
-	while (i < 100)
-	{
-		copy[i] = map[i];
-		i++;
-	}
-	return (copy);
-}
-
-void	copy_map_data(t_byte *src, t_byte *dest)
-{
-	int	i;
-
-	i = 0;
-	while (i < 100)
-	{
-		dest[i] = src[i];
-		i++;
-	}
-}
-
-t_master	*make_bitmaps(void)
+t_master		*make_bitmaps(void)
 {
 	t_master	*out;
 
 	out = malloc(sizeof(*out));
 	bzero(out, sizeof(*out));
-}
-
-void	normalize_heatmap(t_master *bitmaps)
-{
-	int		i;
-	double	total;
-
-	i = 0;
-	total = 0;
-	while (i < 100)
-	{
-		total += bitmaps->heatmap[i];
-		i++;
-	}
-	i = 0;
-	while (i < 100)
-	{
-		bitmaps->heatmap[i] = (bitmaps->heatmap[i] / total) * 100;
-		i++;
-	}
-}
-
-void	print_heatmap(t_master *bitmaps)
-{
-	int	i;
-
-	i = 0;
-	while (i < 100)
-	{
-		if (i % 10 == 0)
-			printf("\n\n");
-		printf("%.2f ", bitmaps->heatmap[i]);
-		i++;
-	}
-	printf("\n");
-}
-
-void	printoo(t_master *bitmaps)
-{
-		int	i;
-
-	i = 0;
-	while (i < 100)
-	{
-		printf("\n");
-		printf("%f ", bitmaps->heatmap[i]);
-		i++;
-	}
+	out->shield_pos.one = 0b1111111111111111111111111111111111111111111111111111111111111111;
+	out->shield_pos.two = 0b1111111111111111111111111111111100000000000000000000000000000000;
 }
