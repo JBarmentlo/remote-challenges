@@ -4,6 +4,24 @@
 #include <stdio.h>
 
 
+int			is_pos_one_coord(t_map *map, int i, int j)
+{
+	return (is_pos_one(map, 10 * i + j));
+}
+
+int			is_pos_one(t_map *map, int pos)
+{
+	static t_map	mask;
+	t_map			tmp;
+
+	mask.one = MAXO;
+	mask.two = 0;
+	tmp = right_shift_loc(mask, pos);
+	if (is_bitwise_and_zero(&tmp, map))
+		return (0);
+	return (1);
+}
+
 void		add_ship(t_master *bitmaps, t_map *ship_map, t_ship *ship, int pos)
 {
 	t_map	contact;
@@ -56,15 +74,24 @@ void		make_contact_from_map(t_map *map, t_map *contact)
 	t_map	tmp;
 
 	tmp = *map;
+	*contact = map_or(contact, &tmp);
 	right_shift(&tmp, 1);
 	*contact = map_or(contact, &tmp);
-	right_shift(&tmp, 9);
+	right_shift(&tmp, 1);
 	*contact = map_or(contact, &tmp);
-	right_shift(&tmp, 2);
+	right_shift(&tmp, 8);
 	*contact = map_or(contact, &tmp);
-	right_shift(&tmp, 9);
+	right_shift(&tmp, 1);
 	*contact = map_or(contact, &tmp);
-	left_shift(&tmp, 10);
+	right_shift(&tmp, 1);
+	*contact = map_or(contact, &tmp);
+	right_shift(&tmp, 8);
+	*contact = map_or(contact, &tmp);
+	right_shift(&tmp, 1);
+	*contact = map_or(contact, &tmp);
+	right_shift(&tmp, 1);
+	*contact = map_or(contact, &tmp);
+	left_shift(&tmp, 11);
 	*contact = map_xor(contact, &tmp);
 }
 
@@ -184,7 +211,7 @@ inline void	left_shift(t_map *map, int shift)
 {
 	if (shift == 0)
 		return ;
-	if (shift == 64)
+	if (shift >= 64)
 	{
 		map->one = map->two << (shift - 64);
 		map->two = 0;
@@ -196,7 +223,14 @@ inline void	left_shift(t_map *map, int shift)
 
 inline t_map	right_shift_loc(t_map map, int shift)
 {
-	printf("DO NOT USE MISTAKE WERE MADE\n");
+	if (shift == 0)
+		return (map) ;
+	if (shift >= 64)
+	{
+		map.two = map.one >> (shift - 64);
+		map.one = 0;
+		return (map) ;
+	}
 	map.two = (map.two >> shift) | (map.one << (64 - shift));
 	map.one = map.one >> shift;
 	return (map);

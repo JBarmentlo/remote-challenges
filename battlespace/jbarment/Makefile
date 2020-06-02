@@ -10,6 +10,8 @@ SOURCES=map_operations.c\
 		main.c\
 		generator_nation.c\
 		ship_operations.c\
+		read_input.c\
+		generator_shield.c\
 
 SRCS=$(addprefix $(SOURCE_FOLDER)/, $(SOURCES))
 OUT= $(addprefix $(OBJ_FOLDER)/,$(notdir $(SOURCES:.c=.o)))

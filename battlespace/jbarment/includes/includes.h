@@ -6,7 +6,11 @@
 # define LCOLTWO	0b0000001000000000100000000010000000000000000000000000000000000000
 # define RCOLONE	0b0000000001000000000100000000010000000001000000000100000000010000
 # define RCOLTWO	0b0000010000000001000000000100000000010000000000000000000000000000 
-# define ROW	0b1111111100000000000000000000000000000000000000000000000000000000
+# define ROW		0b1111111100000000000000000000000000000000000000000000000000000000
+# define HIT		0b0001
+# define MISS		0b0010
+# define SUNK		0b0100
+# define BLOCKED	0b1000
 
 typedef unsigned char	t_byte;
 
@@ -87,6 +91,18 @@ void		make_contact_from_map(t_map *map, t_map *contact);
 t_map		contact_pos(const t_ship *ship, int pos);
 void		add_ship(t_master *bitmaps, t_map *ship_map, t_ship *ship, int pos);
 void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map ship_map);
+void		make_cheap_heatmap(t_master *bitmaps, t_fleet *fleet);
+int			is_pos_one(t_map *map, int pos);
+
+int			qualify_string(char buffer[9]);
+int			update_bitmaps_from_input(char buffer[9], t_master *bitmaps, int pos);
+int			is_pos_one_coord(t_map *map, int i, int j);
+void		make_map_from_pos(t_ship *ship);
+t_map		new_map(void);
+t_fleet		*make_shield_fleet(void);
+t_map		shield_contact_from_pos(t_ship *shield, int pos);
+
+
 
 
 

@@ -84,7 +84,6 @@ void	apply_ship_map_to_heatmap(t_map ship_map,t_master *bitmaps)
 	}
 }
 
-
 void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map ship_map)
 {
 	int		pos;
@@ -143,6 +142,36 @@ void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map shi
 	return;
 }
 
+void		make_cheap_heatmap_ship(t_master *bitmaps, t_ship *ship)
+{
+	int		pos;
+
+	pos = 0;
+	while (pos < 100)
+	{
+		if (is_pos_valid(ship, pos, bitmaps))
+		{
+			apply_ship_map_to_heatmap(right_shift_loc(ship->map, pos), bitmaps);
+		}
+		pos++;
+	}
+}
+
+void		make_cheap_heatmap(t_master *bitmaps, t_fleet *fleet)
+{
+	int	i;
+
+	i = 0;
+	while (i < 5)
+	{
+		if (fleet->live_ships[i])
+		{
+			make_cheap_heatmap_ship(bitmaps, &fleet->ships[i]);
+			make_cheap_heatmap_ship(bitmaps, &fleet->ships_90[i]);
+		}
+		i++;
+	}
+}
 
 /*
 // WILL CHANGE OBSTACLES MAP MAKE A TMP !! ASSUMES POS TO BE VALID
