@@ -103,8 +103,8 @@ void		make_heatmap_bit(t_master *bitmaps, t_fleet *fleet, int ship_no, t_map shi
 		apply_ship_map_to_heatmap(ship_map, bitmaps);
 		bitmaps->total += 1;
 		//printf("END\n");
-		printf("shipmap\n");
-		print_map(&ship_map);
+		//printf("shipmap\n");
+		//print_map(&ship_map);
 		//printf("obstacles\n");
 		//print_map(&bitmaps->obstacles);
 		return;

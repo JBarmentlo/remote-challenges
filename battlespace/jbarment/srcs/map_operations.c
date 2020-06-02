@@ -281,6 +281,7 @@ void	print_heatmap(t_master *bitmaps)
 		printf("%.2f ", bitmaps->heatmap[i]);
 		i++;
 	}
+	printf("\n");
 }
 
 void	printoo(t_master *bitmaps)
