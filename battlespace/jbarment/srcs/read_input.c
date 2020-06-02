@@ -7,6 +7,7 @@ int		handle_input(t_master *bitmaps, int pos)
 	char	buffer[9];
 	int		i;
 
+	dprintf(2, "HANDLE INPT\n");
 	i = 0;
 	while(i < 9)
 	{
@@ -50,8 +51,6 @@ int		update_bitmaps_from_input(char buffer[9], t_master *bitmaps, int pos)
 		add_pos(&bitmaps->hit, pos);
 		add_pos(&bitmaps->current_hunt, pos);
 		update_shield_pos_hit(bitmaps, pos);
-		write_map(&bitmaps->shield_pos);
-		return (HIT);
 	}
 	if (result == BLOCKED)
 	{
@@ -62,15 +61,13 @@ int		update_bitmaps_from_input(char buffer[9], t_master *bitmaps, int pos)
 	}
 	if (result == SUNK)
 	{
-		add_pos(&bitmaps->hit, pos);
-		add_pos(&bitmaps->current_hunt, pos);
 		bitmaps->sunk = map_or(&bitmaps->sunk, &bitmaps->current_hunt);
 		bitmaps->current_sunk = bitmaps->current_hunt;
 		bitmaps->current_hunt = new_map();
 		//bitmaps->contact = map_or(make_contact_from_map(&bitmaps->current_hunt))
-		printf("UPDATE CONTACT MAP\n");
+		//dprintf(2, "UPDATE CONTACT MAP\n");
 		return (SUNK);
 	}
-	
+	return (result);
 
 }

@@ -15,6 +15,7 @@ void	shoot(int pos, t_master *bitmaps)
 	out[2] = '\n';
 	write(1, out, 3);
 	write(2, out, 3);
+	handle_input(bitmaps, pos);
 	return ;
 }
 

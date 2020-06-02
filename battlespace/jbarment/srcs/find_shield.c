@@ -44,13 +44,16 @@ void	make_shield_heatmap(t_master *bitmaps, t_ship *shield)
 
 int		choose_shot_shield(t_master *bitmaps, t_ship *shield)
 {
-	t_map	map;
+	int		i;
 
-	write_map(&bitmaps->shield_pos);
-	write_map(&bitmaps->hit);
-	dprintf(2, "shield pos nb: %d \n", count(&bitmaps->shield_pos));
-	make_shield_heatmap(bitmaps, shield);
-	return (heatmap_pick_highest(bitmaps));
+	i = 0;
+	while (i < 100)
+	{
+		if (is_pos_one(&bitmaps->shield_pos, i) == 1)
+			return (i);
+		i++;
+	}
+	return (-1);
 }
 
 int		shoot_for_shield(t_master *bitmaps)
@@ -59,6 +62,7 @@ int		shoot_for_shield(t_master *bitmaps)
 	int		result;
 	t_ship	*shield;
 
+	dprintf(2, "SHIELD HUNTING MODE \n");
 	result = 0;
 	last_shot = 0;
 	shield = &bitmaps->shield_fleet->ships[0];
@@ -68,6 +72,7 @@ int		shoot_for_shield(t_master *bitmaps)
 		dprintf(2, "shield shot %d\n", last_shot);
 		shoot(last_shot, bitmaps);
 		result = handle_input(bitmaps, last_shot);
+		dprintf(2, "result %d\n", result);
 	}
 	return (result);
 }
@@ -76,8 +81,6 @@ void	update_shield_pos_hit(t_master *bitmaps, int last_pos)
 {
 	t_map	tmp;
 	t_ship	*shield;
-	int		nb;
-	int		i;
 
 	shield = &bitmaps->shield_fleet->ships[0];
 	tmp = shield_contact_from_pos(shield, last_pos);
@@ -85,17 +88,7 @@ void	update_shield_pos_hit(t_master *bitmaps, int last_pos)
 	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->hit);
 	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->sunk);
 
-	tmp.one = MAXO;
-	tmp.two = 0;
-	i = 0;
-	nb = 0;
-	while (i < 100)
-	{
-		if (is_bitwise_and_one(&tmp, &bitmaps->shield_pos))
-			nb += 1;
-		i++;
-	}
-	bitmaps->shield_pos_nb = nb;
+	bitmaps->shield_pos_nb = count(&bitmaps->shield_pos);
 	return ;
 }
 
@@ -103,8 +96,6 @@ void	update_shield_pos(t_master *bitmaps, int last_pos)
 {
 	t_map	tmp;
 	t_ship	*shield;
-	int		nb;
-	int		i;
 
 	shield = &bitmaps->shield_fleet->ships[0];
 	tmp = shield_contact_from_pos(shield, last_pos);
@@ -112,16 +103,6 @@ void	update_shield_pos(t_master *bitmaps, int last_pos)
 	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->hit);
 	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->sunk);
 
-	tmp.one = MAXO;
-	tmp.two = 0;
-	i = 0;
-	nb = 0;
-	while (i < 100)
-	{
-		if (is_bitwise_and_one(&tmp, &bitmaps->shield_pos))
-			nb += 1;
-		i++;
-	}
-	bitmaps->shield_pos_nb = nb;
+	bitmaps->shield_pos_nb = count(&bitmaps->shield_pos);
 	return ;
 }

@@ -23,9 +23,8 @@ int	main()
 
 	while (1)
 	{
-		if (bitmaps->shield_pos_nb < 5)
+		if (bitmaps->shield_pos_nb < 7 && bitmaps->shield_fleet->live_ships[0] == 1)
 		{
-			dprintf(2, "SHIELD HUNTING MODE \n");
 			shoot_for_shield(bitmaps);
 		}
 		if (result == SUNK)

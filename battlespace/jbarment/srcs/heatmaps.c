@@ -107,7 +107,6 @@ void		make_obstacles(t_master *bitmaps)
 	bitmaps->obstacles = map_or(&bitmaps->obstacles, &bitmaps->sunk);
 	bitmaps->obstacles = map_or(&bitmaps->obstacles, &bitmaps->miss);
 	bitmaps->obstacles = map_or(&bitmaps->obstacles, &bitmaps->contact);
-
 }
 
 void		zero_tmp_heatmap(t_master *bitmaps)

@@ -41,6 +41,15 @@ t_id	identify_sunk_ship_fleet(t_fleet *fleet, t_master *bitmaps)
 	t_id	out;
 
 	i = 0;
+	if (count(&bitmaps->current_sunk) == 1)
+	{
+		out.fleet = bitmaps->shield_fleet;
+		out.is_90 = 0;
+		out.num = 0;
+		out.ship = &bitmaps->shield_fleet->ships[0];
+		out.pos = splice(&bitmaps->shield_fleet->ships[0], bitmaps->current_sunk, bitmaps);
+		return (out);
+	}
 	while (i < 5)
 	{
 		if (fleet->live_ships[i] == 1)
@@ -79,15 +88,17 @@ int		hunt_mode(t_master *bitmaps)
 	result = 0;
 	while (last_shot != -1 && result != SUNK)
 	{
-//		write_map(&bitmaps->obstacles);
-//		write_map(&bitmaps->hit);
-//		write_map(&bitmaps->current_hunt);
-//		write_heatmap(bitmaps->heatmap);
+		write_map(&bitmaps->current_hunt);
 		last_shot = choose_hunt_shot(bitmaps);
 		if (last_shot != -1)
 		{
-			shoot(last_shot, bitmaps);
-			result = handle_input(bitmaps, last_shot);
+			if (bitmaps->shield_pos_nb < 7 && bitmaps->shield_fleet->live_ships[0] == 1)
+				shoot_for_shield(bitmaps); //FUCK UP ?
+			else
+			{
+				shoot(last_shot, bitmaps);
+				result = handle_input(bitmaps, last_shot);
+			}
 		}
 	}
 	if (last_shot == -1)
