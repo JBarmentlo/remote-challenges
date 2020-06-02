@@ -81,6 +81,7 @@ typedef struct	s_id
 	t_fleet		*fleet;
 	int			num;
 	int			is_90;
+	int			pos;
 }				t_id;
 
 
@@ -95,8 +96,10 @@ void		normalize_heatmap_tmp(t_master *bitmaps);
 void		print_heatmap(t_master *bitmaps);
 void		printoo(t_master *bitmaps);
 void		print_ship(t_ship *ship);
+void		write_ship(t_ship *ship);
 void		print_fleet(t_fleet *fleet);
 int			is_pos_valid(t_ship *ship, int pos, t_master *bitmaps);
+int			is_pos_valid_no_obst(t_ship *ship, int pos, t_master *bitmaps);
 
 
 t_map		right_shift_loc(t_map map, int shift);
@@ -133,6 +136,7 @@ t_fleet		*make_shield_fleet(t_master *bitmaps);
 t_map		shield_contact_from_pos(t_ship *shield, int pos);
 void		make_shield_heatmap(t_master *bitmaps, t_ship *shield);
 void		update_shield_pos(t_master *bitmaps, int last_pos);
+void		update_shield_pos_hit(t_master *bitmaps, int last_pos);
 
 
 void		apply_ship_map_to_heatmap(t_map ship_map,t_master *bitmaps);
@@ -152,12 +156,13 @@ int			handle_input(t_master *bitmaps, int pos);
 void		write_map(t_map *map);
 void		write_heatmap(double heatmap[100]);
 
-void		shoot_for_shield(t_master *bitmaps, t_ship *shield);
+int			shoot_for_shield(t_master *bitmaps);
 int			choose_shot_shield(t_master *bitmaps, t_ship *shield);
 
 int			hunt_mode(t_master *bitmaps);
 int			choose_hunt_shot(t_master *bitmaps);
 t_id		identify_sunk_ship_fleet(t_fleet *fleet, t_master *bitmaps);
+void		handle_sunk_ship(t_master *bitmaps, t_id sunk_id);
 
 
 #endif

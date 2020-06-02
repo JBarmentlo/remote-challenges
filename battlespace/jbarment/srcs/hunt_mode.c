@@ -9,12 +9,12 @@ static int	splice(t_ship *ship, t_map sunk, t_master *bitmaps)
 
 	tmp = ship->map;
 	possible = 0;
-	pos = 0;
+	pos = -1;
 	while (pos < 100)
 	{
-		if (is_pos_valid(ship, pos, bitmaps) && equals(tmp, map_and(&sunk, &tmp)))
+		if (is_pos_valid_no_obst(ship, pos, bitmaps) && equals(tmp, map_and(&sunk, &tmp)))
 		{
-			possible = 1;
+			possible = pos;
 			if (count(&tmp) < count(&sunk))
 				bitmaps->annexe_sunk =1;
 		}
@@ -22,6 +22,16 @@ static int	splice(t_ship *ship, t_map sunk, t_master *bitmaps)
 		right_shift(&tmp, 1);
 	}
 	return (possible);
+}
+
+void	handle_cock_block_fleet(t_master *bitmaps, t_fleet *fleet)
+{
+	t_id	sunk_id;
+
+	bitmaps->current_sunk = bitmaps->current_hunt;
+	sunk_id = identify_sunk_ship_fleet(fleet, bitmaps);
+	handle_sunk_ship(bitmaps, sunk_id);
+	return ;
 }
 
 // ASSUMES SHIPS ARE SORTED BY SIZE
@@ -35,20 +45,22 @@ t_id	identify_sunk_ship_fleet(t_fleet *fleet, t_master *bitmaps)
 	{
 		if (fleet->live_ships[i] == 1)
 		{
-			if (splice(&fleet->ships[i], bitmaps->current_sunk, bitmaps) == 1)
+			if (splice(&fleet->ships[i], bitmaps->current_sunk, bitmaps) != -1)
 			{
 				out.fleet = fleet;
 				out.is_90 = 0;
 				out.num = i;
 				out.ship = &fleet->ships[i];
+				out.pos = splice(&fleet->ships[i], bitmaps->current_sunk, bitmaps);
 				return (out);
 			}
-			if (splice(&fleet->ships_90[i],  bitmaps->current_sunk, bitmaps) == 1)
+			if (splice(&fleet->ships_90[i],  bitmaps->current_sunk, bitmaps) != -1)
 			{
 				out.fleet = fleet;
 				out.is_90 = 0;
 				out.num = i;
 				out.ship = &fleet->ships_90[i];
+				out.pos = splice(&fleet->ships_90[i], bitmaps->current_sunk, bitmaps);
 				return (out);
 			}
 			i++;
@@ -70,13 +82,18 @@ int		hunt_mode(t_master *bitmaps)
 //		write_map(&bitmaps->obstacles);
 //		write_map(&bitmaps->hit);
 //		write_map(&bitmaps->current_hunt);
-		last_shot = choose_hunt_shot(bitmaps);
 //		write_heatmap(bitmaps->heatmap);
+		last_shot = choose_hunt_shot(bitmaps);
 		if (last_shot != -1)
 		{
 			shoot(last_shot, bitmaps);
 			result = handle_input(bitmaps, last_shot);
 		}
+	}
+	if (last_shot == -1)
+	{
+		dprintf(2, "getting cock blocked\n");
+		write_map(&bitmaps->current_hunt);
 	}
 	dprintf(2, "Exiting hunt mode\n");
 	return (result);
@@ -86,11 +103,6 @@ int		choose_hunt_shot(t_master *bitmaps)
 {
 	if (make_surround_map(bitmaps, bitmaps->nation_fleet) == 0)
 	{
-		write_heatmap(bitmaps->heatmap);
-		write_map(&bitmaps->hit);
-		write_map(&bitmaps->current_hunt);
-		printf("getting cock blocked\n");
-		dprintf(2, "getting cock blocked\n");
 		return (-1);
 	}
 //	dprintf(2, "hunt out heat\n");

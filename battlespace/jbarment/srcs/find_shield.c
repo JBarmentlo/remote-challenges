@@ -22,7 +22,6 @@ void	make_shield_heatmap(t_master *bitmaps, t_ship *shield)
 	shipmap = new_map();
 	shipmap.one = MAXO;
 	bitmaps->obstacles = map_or(&bitmaps->obstacles, &bitmaps->hit);
-	bitmaps->obstacles = map_or(&bitmaps->obstacles, &bitmaps->miss);
 	pos = 0;
 	while (pos < 100)
 	{
@@ -35,49 +34,68 @@ void	make_shield_heatmap(t_master *bitmaps, t_ship *shield)
 		contact = shield_contact_from_pos(shield, pos);
 		if (is_valid_shield_pos(bitmaps, shield, &contact, pos))
 		{
-			dprintf(2, "VALIUD SHIEALD POS\n");
 			apply_ship_map_to_heatmap(shipmap, bitmaps);
 		}
 		pos++;
 		right_shift(&shipmap, 1);
 	}
-	//write_heatmap(bitmaps);
-}
-
-int		choose_quarter(t_master *bitmaps)
-{
-		if (is_pos_one(&bitmaps->shot, 77) == 0)
-			return (77);
-		if (is_pos_one(&bitmaps->shot, 22) == 0)
-			return (22);
-		if (is_pos_one(&bitmaps->shot, 27) == 0)
-			return (27);
-		if (is_pos_one(&bitmaps->shot, 72) == 0)
-			return (72);
-		return (-1);
+	write_heatmap(bitmaps->heatmap);
 }
 
 int		choose_shot_shield(t_master *bitmaps, t_ship *shield)
 {
 	t_map	map;
 
-	map = new_map();
-	if (bitmaps->blocked.one == 0 && bitmaps->blocked.two == 0)
-		if (choose_quarter(bitmaps) != -1)
-			return (choose_quarter(bitmaps));
+	write_map(&bitmaps->shield_pos);
+	write_map(&bitmaps->hit);
+	dprintf(2, "shield pos nb: %d \n", count(&bitmaps->shield_pos));
 	make_shield_heatmap(bitmaps, shield);
 	return (heatmap_pick_highest(bitmaps));
 }
 
-void	shoot_for_shield(t_master *bitmaps, t_ship *shield)
+int		shoot_for_shield(t_master *bitmaps)
 {
-	int	shield_dead;
+	int		last_shot;
+	int		result;
+	t_ship	*shield;
 
-	shield_dead = 0;
-	while (!shield_dead)
+	result = 0;
+	last_shot = 0;
+	shield = &bitmaps->shield_fleet->ships[0];
+	while (result != SUNK)
 	{
-		shoot(choose_shot_shield(bitmaps, shield), bitmaps);
+		last_shot = choose_shot_shield(bitmaps, shield), bitmaps;
+		dprintf(2, "shield shot %d\n", last_shot);
+		shoot(last_shot, bitmaps);
+		result = handle_input(bitmaps, last_shot);
 	}
+	return (result);
+}
+
+void	update_shield_pos_hit(t_master *bitmaps, int last_pos)
+{
+	t_map	tmp;
+	t_ship	*shield;
+	int		nb;
+	int		i;
+
+	shield = &bitmaps->shield_fleet->ships[0];
+	tmp = shield_contact_from_pos(shield, last_pos);
+	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, tmp);
+	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->hit);
+	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->sunk);
+
+	tmp.one = MAXO;
+	tmp.two = 0;
+	i = 0;
+	nb = 0;
+	while (i < 100)
+	{
+		if (is_bitwise_and_one(&tmp, &bitmaps->shield_pos))
+			nb += 1;
+		i++;
+	}
+	bitmaps->shield_pos_nb = nb;
 	return ;
 }
 
@@ -91,7 +109,6 @@ void	update_shield_pos(t_master *bitmaps, int last_pos)
 	shield = &bitmaps->shield_fleet->ships[0];
 	tmp = shield_contact_from_pos(shield, last_pos);
 	bitmaps->shield_pos = map_and(&bitmaps->shield_pos, &tmp);
-	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->miss);
 	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->hit);
 	bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->sunk);
 

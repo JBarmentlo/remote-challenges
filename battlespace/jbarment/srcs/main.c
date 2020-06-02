@@ -20,17 +20,18 @@ int	main()
 	make_shield_fleet(bitmaps);
 	make_nation_fleet(bitmaps);
 	result = 0;
-	/*
+
 	while (1)
 	{
-//		write_map(&bitmaps->shot);
+		if (bitmaps->shield_pos_nb < 5)
+		{
+			dprintf(2, "SHIELD HUNTING MODE \n");
+			shoot_for_shield(bitmaps);
+		}
 		if (result == SUNK)
 		{
-			dprintf(2, "Sunk\n");
-			write_map(&bitmaps->sunk);
-			dprintf(2, "curent_Sunk\n");
-			write_map(&bitmaps->current_sunk);
-			identify_sunk_ship_fleet(&bitmaps->current_sunk, bitmaps->nation_fleet, bitmaps).ship;
+			sunk_id = identify_sunk_ship_fleet(bitmaps->nation_fleet, bitmaps);
+			handle_sunk_ship(bitmaps, sunk_id);
 		}
 		if (result == MISS)
 		{
@@ -53,16 +54,13 @@ int	main()
 			result = handle_input(bitmaps, last_shot);
 		}
 	}
-	*/
+
 /*
 	add_pos(&bitmaps->current_sunk, 55);
-	add_pos(&bitmaps->current_sunk, 56);
-	add_pos(&bitmaps->current_sunk, 57);
-	add_pos(&bitmaps->current_sunk, 58);
-	add_pos(&bitmaps->current_sunk, 59);
+	add_pos(&bitmaps->current_sunk, 65);
 
 	print_ship(identify_sunk_ship_fleet(bitmaps->nation_fleet, bitmaps).ship);
-	*/
+*/
 //	make_surround_map(bitmaps, bitmaps->nation_fleet);
 //	print_heatmap(bitmaps);
 

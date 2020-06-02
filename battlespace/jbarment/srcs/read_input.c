@@ -45,10 +45,12 @@ int		update_bitmaps_from_input(char buffer[9], t_master *bitmaps, int pos)
 		add_pos(&bitmaps->obstacles, pos);
 		return (MISS);
 	}
-	if (result == HIT)
+	if (result == HIT || result == SUNK)
 	{
 		add_pos(&bitmaps->hit, pos);
 		add_pos(&bitmaps->current_hunt, pos);
+		update_shield_pos_hit(bitmaps, pos);
+		write_map(&bitmaps->shield_pos);
 		return (HIT);
 	}
 	if (result == BLOCKED)

@@ -2,6 +2,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+void		handle_sunk_ship(t_master *bitmaps, t_id sunk_id)
+{
+	t_map	tmp;
+
+	tmp = contact_pos(sunk_id.ship, sunk_id.pos);
+	sunk_id.fleet->live_ships[sunk_id.num] = 0;
+	sunk_id.fleet->nb_live_ships -= 1;
+	bitmaps->contact = map_or(&bitmaps->contact, &tmp);
+
+}
+
 void		print_ship(t_ship *ship)
 {
 	int	i;
@@ -23,6 +34,27 @@ void		print_ship(t_ship *ship)
 	printf("\n");
 }
 
+void		write_ship(t_ship *ship)
+{
+	int	i;
+	int	piece;
+
+	piece = 0;
+	i = 0;
+	dprintf(2, "width: %d\n height: %d\n size: %d\n", ship->width, ship->height, ship->size);
+	while (i < ship->size)
+	{
+		dprintf(2, "%d  ", ship->pos[i]);
+		i++;
+	}
+	dprintf(2, "\n");
+	write_map(&(ship->map));
+	dprintf(2,"\n contact: \n");
+	write_map(&(ship->contact));
+
+	dprintf(2, "\n");
+}
+
 void		print_fleet(t_fleet *fleet)
 {
 	int	i;
@@ -37,6 +69,21 @@ void		print_fleet(t_fleet *fleet)
 		}
 		i++;
 	}
+}
+
+int			is_pos_valid_no_obst(t_ship *ship, int pos, t_master *bitmaps)
+{
+	int		posi;
+	int		posj;
+	t_map	ship_map;
+
+	posi = pos / 10;
+	if ((posi + ship->height) > 10) // check these bitches
+		return (0);
+	posj = pos % 10;
+	if ((posj + ship->width) > 10)
+		return (0);
+	return (1);
 }
 
 int			is_pos_valid(t_ship *ship, int pos, t_master *bitmaps)

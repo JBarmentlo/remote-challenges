@@ -106,7 +106,7 @@ void		make_obstacles(t_master *bitmaps)
 	bitmaps->obstacles = new_map();
 	bitmaps->obstacles = map_or(&bitmaps->obstacles, &bitmaps->sunk);
 	bitmaps->obstacles = map_or(&bitmaps->obstacles, &bitmaps->miss);
-//	bitmaps->obstacles = map_or(&bitmaps->obstacles, &bitmaps->contact);
+	bitmaps->obstacles = map_or(&bitmaps->obstacles, &bitmaps->contact);
 
 }
 
