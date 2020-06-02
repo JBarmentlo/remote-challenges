@@ -69,10 +69,8 @@ int		shoot_for_shield(t_master *bitmaps)
 	while (result != SUNK)
 	{
 		last_shot = choose_shot_shield(bitmaps, shield), bitmaps;
-		dprintf(2, "shield shot %d\n", last_shot);
-		shoot(last_shot, bitmaps);
-		result = handle_input(bitmaps, last_shot);
-		dprintf(2, "result %d\n", result);
+		dprintf(2, "shot : %d\n", last_shot);
+		result = shoot(last_shot, bitmaps);
 	}
 	return (result);
 }

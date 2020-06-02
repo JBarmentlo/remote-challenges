@@ -149,7 +149,7 @@ void		zero_tmp_heatmap(t_master *bitmaps);
 void		zero_heatmap(t_master *bitmaps);
 
 
-void		shoot(int pos, t_master *bitmaps);
+int			shoot(int pos, t_master *bitmaps);
 void		print_input();
 int			handle_input(t_master *bitmaps, int pos);
 
@@ -164,5 +164,6 @@ int			choose_hunt_shot(t_master *bitmaps);
 t_id		identify_sunk_ship_fleet(t_fleet *fleet, t_master *bitmaps);
 void		handle_sunk_ship(t_master *bitmaps, t_id sunk_id);
 
+void	finish_blocked(t_master *bitmaps);
 
 #endif

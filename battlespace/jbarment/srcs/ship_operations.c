@@ -9,7 +9,8 @@ void		handle_sunk_ship(t_master *bitmaps, t_id sunk_id)
 	tmp = contact_pos(sunk_id.ship, sunk_id.pos);
 	sunk_id.fleet->live_ships[sunk_id.num] = 0;
 	sunk_id.fleet->nb_live_ships -= 1;
-	bitmaps->contact = map_or(&bitmaps->contact, &tmp);
+	if (sunk_id.ship->size != 1)
+		bitmaps->contact = map_or(&bitmaps->contact, &tmp);
 }
 
 void		print_ship(t_ship *ship)

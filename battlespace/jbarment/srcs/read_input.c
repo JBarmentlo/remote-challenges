@@ -7,7 +7,6 @@ int		handle_input(t_master *bitmaps, int pos)
 	char	buffer[9];
 	int		i;
 
-	dprintf(2, "HANDLE INPT\n");
 	i = 0;
 	while(i < 9)
 	{
@@ -44,12 +43,16 @@ int		update_bitmaps_from_input(char buffer[9], t_master *bitmaps, int pos)
 	{
 		add_pos(&bitmaps->miss, pos);
 		add_pos(&bitmaps->obstacles, pos);
+		bitmaps->shield_pos = substract_map(bitmaps->shield_pos, bitmaps->miss);
+		bitmaps->shield_pos_nb = count(&bitmaps->shield_pos);
 		return (MISS);
 	}
 	if (result == HIT || result == SUNK)
 	{
 		add_pos(&bitmaps->hit, pos);
 		add_pos(&bitmaps->current_hunt, pos);
+		bitmaps->blocked = substract_map(bitmaps->blocked, bitmaps->hit);
+		bitmaps->blocked = substract_map(bitmaps->blocked, bitmaps->sunk);
 		update_shield_pos_hit(bitmaps, pos);
 	}
 	if (result == BLOCKED)
@@ -66,6 +69,8 @@ int		update_bitmaps_from_input(char buffer[9], t_master *bitmaps, int pos)
 		bitmaps->current_hunt = new_map();
 		//bitmaps->contact = map_or(make_contact_from_map(&bitmaps->current_hunt))
 		//dprintf(2, "UPDATE CONTACT MAP\n");
+		handle_sunk_ship(bitmaps, identify_sunk_ship_fleet(bitmaps->nation_fleet, bitmaps));
+		dprintf(2, "out\n");
 		return (SUNK);
 	}
 	return (result);
